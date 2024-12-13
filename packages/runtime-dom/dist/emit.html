@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render, Fragment } from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h, ref, Fragment } from './runtime-dom.js';
+
+        
+        const VueComponent = {
+            setup(proxy,{emit}) {
+                return () => {
+                    return h('button',{onClick:()=>emit('myEvent',666)},'点我')
+                }
+            },
+        }
+
+        // 渲染组件VueComponent
+        // 同时给此组件绑定事件
+        // 举例： <VueComponent @click=()=>{...}/>
+        render(h(VueComponent,{onMyEvent:(n)=>alert(n)}), app)
+
+        setTimeout(() => {
+            render(h(null, { onMyEvent: (n) => alert(n) }), app)
+        }, 1000);
+    </script>
+</body>
+
+</html>

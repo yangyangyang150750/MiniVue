@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h,ref } from './runtime-dom.js';
+
+        // setup函数 
+        // 每个组件只会执行一次 可以在其中放入组合式api reactive ref
+        // 能解决反复横跳的问题
+        // setup 返回值有两种类型
+        //  setup返回值的优先级 高于 render
+
+        const VueComponent = {
+            setup(){
+                const a =ref(1)
+                setTimeout(() => {
+                    a.value=100
+                }, 1000);
+                return {
+                    a:a
+                }
+            },
+            render(proxy){
+                return h('div',proxy.a)
+            }
+        }
+
+        render(h(VueComponent),app)
+    </script>
+</body>
+</html>

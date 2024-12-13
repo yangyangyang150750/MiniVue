@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="module">
+        // 官方的
+        // import {h, defineAsyncComponent ,render,} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import {h, defineAsyncComponent ,render} from './runtime-dom.js';
+
+
+        // 异步组件的原理 与 图片懒加载类似
+        let comp = import('/packages/runtime-dom/dist/asyncComponent.js')
+        
+        // 写法一 函数式
+        // let myComp = defineAsyncComponent(()=>{
+        //     return new Promise((resolve,reject)=>{
+        //         setTimeout(() => {
+        //             resolve({
+        //                 render(){
+        //                     return h('div','hello~~')
+        //                 }
+        //             })
+        //         }, 1000);
+        //     })
+        // })
+
+        // 写法二：对象式
+        const myComp = defineAsyncComponent({
+            loader: () => {
+             return new Promise((resolve,reject)=>{
+                 setTimeout(() => {
+                     reject({
+                         render(){
+                             return h('div','hello~~')
+                         }
+                     })
+                 }, 2000);
+             })
+            },
+            timeout:1000,
+            errorComponent:{
+                render:()=>{
+                    return h('div','error~~~')
+                }
+            },
+            // 延迟事件
+            delay:500,
+            loadingComponent:{
+                render(){
+                    return h('div','loading~~~')
+                }
+            },
+
+            // 当出现错误时 可以重新请求
+            onError(error,retry,fail,i){
+                setInterval(() => {
+                    console.log(error, retry,fail, i);
+                    retry()
+                    console.log('重新请求ing~~');
+                }, 1000);
+            }
+        })
+
+        render(h(myComp),app)
+    </script>
+</body>
+</html>

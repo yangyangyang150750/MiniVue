@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render, Fragment , onMounted ,ref,inject,provide} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h, ref, Fragment, onMounted, inject, provide } from './runtime-dom.js';
+
+        const p3 = {
+            NAME: 'p3',
+            setup() {
+                let name = inject('name')
+                return () => {
+                    return h('div',[name.value])
+                }
+            }
+        }
+
+        const p2 = {
+            NAME: "p2",
+            setup() {
+                return () => {
+                    return h(p3)
+                }
+            }
+        }
+
+        const p1 = {
+            NAME:"p1",
+            setup(){
+                let name=ref('yyy')
+                provide('name',name)
+
+                setTimeout(() => {
+                    name.value='ywh!!'
+                }, 1000);
+                
+                return ()=>{
+                    return h(p2)
+                }
+            }
+        }
+
+        render(h(p1),app)
+    </script>
+</body>
+</html>

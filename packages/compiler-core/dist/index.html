@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script type="module">
+        // import {compile,parse} from '/node_modules/@vue/compiler-dom/dist/compiler-dom.esm-browser.js'
+        import {parse,compile} from './compiler-core.js'
+        // console.log(parse ('<div><span><a></a></span></div>'));
+        // console.log(parse ('<div a=2  c=3></div>'));
+        // console.log(parse(`<div a=2  c=3>
+        //     <div ></div>
+        //     <div ></div>
+        //     <div ></div>
+        //     </div>`));
+        // 处理多空格
+        // console.log(parse(`<div a=2  c=3>
+        //     aa          bb        cc
+        //     </div>`));
+
+        // -- compile
+        console.log(compile('{{1}}'));
+
+    </script>
+
+</body>
+</html>

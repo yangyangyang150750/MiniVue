@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <div id="bottom"></div>
+    <script type="module">
+        // 官方的
+            // import {h,render, Fragment , onMounted ,ref,inject,provide, Teleport } from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+            // 自己的
+            import { render, h, ref, Fragment, onMounted, inject, provide, Teleport  } from './runtime-dom.js';
+
+            render(h(Teleport,{to:'#app'},['ywh']),bottom)
+    </script>
+</body>
+</html>

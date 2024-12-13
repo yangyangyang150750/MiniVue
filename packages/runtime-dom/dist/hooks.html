@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render, Fragment,ref, onBeforeMount, onMounted , onBeforeUpdate , onUpdated } from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h, ref,  onBeforeMount, onMounted, onBeforeUpdate, onUpdated ,getCurrentInstance } from './runtime-dom.js';
+
+
+        const sonComponent = {
+            props(){
+                a:String
+            },
+            setup(proxy){
+                console.log('子组件setup~~');
+                onBeforeMount(() => {
+                    console.log(getCurrentInstance());
+                    console.log('子组件预挂载');
+                })
+                onMounted(() => {
+                    console.log('子组件挂载完成');
+                })
+                onBeforeUpdate(() => {
+                    console.log('子组件预更新');
+                })
+                onUpdated(() => {
+                    console.log('子组件更新完成');
+                })
+                return () => {
+                    return h('div', proxy.a)
+                }
+            }
+        }
+
+
+
+        const VueComponent = {
+            // setup 类似beforeCreate 和 created
+            
+            
+            setup(){
+                let a = ref('1')
+                console.log('父组件setup~~');
+                onBeforeMount(() => {
+                    console.log('父组件预挂载');
+                })
+                onMounted(() => {
+                    console.log('父组件挂载完成');
+                })
+                onBeforeUpdate(() => {
+                    console.log('父组件预更新');
+                })
+                onUpdated(() => {
+                    console.log('父组件更新完成');
+                }),
+                setTimeout(() => {
+                    a.value=1000000
+                }, 1000);
+                return ()=>{
+                    return h(sonComponent,{a:a.value})
+                }
+            }
+        }
+
+        render(h(VueComponent),app)
+    </script>
+</body>
+
+</html>

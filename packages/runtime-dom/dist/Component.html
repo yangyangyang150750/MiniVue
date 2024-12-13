@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div> 
+    <script type="module">
+        // 官方的
+        // import {h} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import{ render,h} from'./runtime-dom.js';
+
+        // // 定义组件
+        // // 组件属性 = attrs(非响应式)+props(响应式)
+        // const VueComponent={
+        //     data() {
+        //         return {
+        //             name:'yyy',
+        //             age:24
+        //         }
+        //     },
+        //     props:{
+        //         a:Number
+        //     },
+        //     render(proxy){
+        //         // setTimeout(() => {
+        //         //     this.age++
+        //         //     this.age++
+        //         // }, 1000);
+
+        //         // render 函数返回的虚拟节点 
+        //         // 才是真正要渲染的内容
+        //         return h('Fragment',
+        //         [
+        //             h('div', this.name),
+        //             h('div', proxy.age),
+        //             h('div', proxy.a),
+        //             h('div', proxy.$attrs.b),
+        //         ])  
+        //     }
+        // }
+
+        const VueComponent = {
+                // 数据：
+                data() {
+                    return {
+                        name: 'yyy',
+                        age: 23
+                    }
+                },
+    // render方法
+    render() {
+                    return h('div', [
+                        h(Text, 'my name is ' + this.name),
+                        h('a', this.age)
+                    ])
+                }
+            }
+
+        // 渲染组件
+        render(h(VueComponent,{a:1,b:2}),app)
+    </script>
+</body>
+</html>

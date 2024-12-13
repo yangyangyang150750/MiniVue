@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h } from './runtime-dom.js';
+
+        // 
+
+        const RenderComponent = {
+            props:{
+                address:String
+            },
+            render(){
+                return h('Text',this.address)
+            }
+        }
+
+        const Component = {
+            data(){
+                return{
+                    flag: true
+                }
+            },
+            render(){
+                return h('Fragment',[
+                    h('Button',{onClick:()=>this.flag = !this.flag},'点击'),
+                    h(RenderComponent,{address:this.flag?'北京':'上海'})
+                ])
+            }
+        }
+        render(h(Component),app)
+    </script>
+</body>
+
+</html>

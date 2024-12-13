@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 原生
+        // import { reactive,ref,computed,effect,watch,watchEffect} from "/node_modules/vue/dist/vue.esm-browser.js"
+        // 自己的
+        import { reactive, effect, ref, toRef, toRefs, proxyRefs, watchEffect,computed,watch } from './reactivity.js'
+        
+        // 可以监视reactive
+        let proxyObj = reactive({ name: 'ywh', age: 20, flag: true, address: { n: 1 } })
+        // 也可以监视ref
+        let refName = ref('ywh')
+// watch
+        // watch( 
+            // proxyObj,
+            // refName,
+            // 还有一种写法 是函数写法
+            // ()=>proxyObj.name,
+            // function(oldValue,newValue){
+            // console.log(oldValue+'--'+newValue);
+            // },
+            // {
+                // deep:true,
+                // immediate参数 会让当前计算属性立即执行一次
+                // immediate:true,
+            // }
+        // )
+
+//watchEffect
+        // watchEffect 类似于ReactiveEffect
+        // 类似于
+        // const runner = effect(()=>{
+            // ...
+        // },{
+            // scheduler:()=>runner.run()
+        // })
+        // watchEffect(()=>{
+        //     console.log(proxyObj.age + '--' + proxyObj.name);
+        // })
+        // setTimeout(() => {
+        //     proxyObj.name = 'yyy'
+        // }, 2000);
+        // setTimeout(() => {
+        //     proxyObj.age = 21
+        // }, 4000);
+
+// 清理函数
+        //创建一个队列
+        // let queue = []
+        let val = ref('')
+        let timer = 3000
+        function getData(timer) {
+            return new Promise((resolve,reject)=>{
+                setTimeout(() => {
+                    console.log(timer);
+                    resolve(timer)
+                }, timer);
+            })
+        }
+        const unwatch =watch(
+            val,
+            async(newValue,oldValue,onCleanup)=>{
+                console.log('回调执行');
+                // 设置标记
+                let flag = true
+                // 取出队列的方法执行
+                // for (let i = 0; i < queue.length; i++) {
+                    // console.log(queue);
+                    // 将先前的flag置为false
+                    // 使得先前的操作无法渲染
+                    // queue[i]()
+                // }
+                // 存入队列方法
+                // 方法会将当前flag置为false（利用了闭包）
+                // queue.push(()=>{
+                    // return flag=false
+                // })
+
+                onCleanup(()=>{
+                    flag=false
+                })
+                timer-=1000
+                let r=await getData(timer)
+                if (flag) {
+                    app.innerHTML = r
+                }
+            },
+            {
+                flush:'sync'
+            })
+
+        // unwatch()
+
+        // 第一次请求 => 2s后返回2000
+        // 第二次请求 => 1s后返回1000
+        // 当前代码 返回结果为2000 明显存在问题
+        // 我们需要在第二次发送请求前 清除之前的请求
+        // 为此 我们可以利用闭包解决此问题
+        setTimeout(() => {
+            val.value='a'
+            val.value='b'
+        }, 1000);
+
+
+    </script>
+</body>
+</html>

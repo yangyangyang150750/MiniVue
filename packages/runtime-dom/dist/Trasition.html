@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <style>
+        /* 下面我们会解释这些 class 是做什么的 */
+        .v-enter-active,
+        .v-leave-active {
+          transition: opacity 0.5s ease;
+        }
+        
+        .v-enter-from,
+        .v-leave-to {
+          opacity: 0;
+        }
+    </style>
+    <script type="module">
+        // 官方的
+        import {h,render, Fragment , onMounted ,ref,inject,provide, Teleport, Transition } from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        // import { render, h, ref, Fragment , Transition } from './runtime-dom.js';
+
+        const props ={
+            onBeforeEnter(el){
+                console.log(arguments,'onBeforeEnter');
+            },
+            onEnter(el) {
+                console.log(arguments, 'onEnter');
+            },
+            onLeave(el) {
+                console.log(arguments, 'onLeave');
+            },
+        }
+
+        render(h(Transition,props,{
+            // 默认插槽
+            default:()=>h('div',{style:{width:'100px',height:'100px',backgroundColor:'red'}})
+        }),app)
+
+
+        setTimeout(() => {
+            render(h(Transition,props,{
+                // 默认插槽
+                default:()=>h('p',{style:{width:'200px',height:'200px',backgroundColor:'blue'}})
+            }),app)
+        }, 1000);
+    </script>
+</body>
+</html>

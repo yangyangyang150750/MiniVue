@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+            // import {h,render, Fragment , onMounted ,ref} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+            // 自己的
+            import { render, h, ref, Fragment,onMounted } from './runtime-dom.js';
+
+            const sonComponent ={
+                setup(){
+                    return ()=>{
+                        return h(Fragment, [
+                            h('div', 1),
+                            h('div', 2)
+                        ])
+                    }
+                }
+            }
+
+            //ref
+            // 1、ref如果放在实例身上 则指向组件实例
+            //    如果实例对外暴露了对象 则指向暴露的对象
+            // 2、ref如果放在dom元素上 则指向dom元素    
+            const VueComponent = {
+                setup(){
+                    const comp = ref(null)
+                    onMounted(() => {
+                        console.log(comp.value);  // 此时取到的是组件实例
+                    })
+                    return ()=>{
+                        return h(sonComponent,{ref:comp})
+                    }
+                }
+            }
+
+            render(h(VueComponent),app)
+    </script>
+</body>
+</html>

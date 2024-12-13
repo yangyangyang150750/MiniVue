@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div> 
+    <script type="module">
+        // 官方的
+        // import {h} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import{ render,h,Fragment} from'./runtime-dom.js';
+
+        // let el1 = h('div',{style:{color:'red'},onClick:()=>alert('11'),a:'1',class:'classA'},'y')
+        //  let el2 = h('div', { style: { color: 'black' }, onClick: () => alert('11'), a: '1', class: 'classA' }, 'ywh')
+        // 创建渲染器
+        // debugger
+        // render(h('div',{class:'a'},'h'),app)
+
+        // let vn1 = h('div',{},
+        // [
+        //     h('div', { key: 'a' }, 'a'),
+        //     h('div', { key: 'b' }, 'b'),
+        //     h('div', { key: 'c' }, 'c'),
+        //     h('div', { key: 'd' }, 'd'),
+        //     h('div', { key: 'e' }, 'e'),
+        //     h('div', { key: 'f' }, 'f'),
+        //     h('div', { key: 'g' }, 'g'),
+
+        // ])
+
+        // let vn2 = h('div',{},
+        // [
+        //     h('div', { key: 'a' }, 'a'),
+        //     h('div', { key: 'b' }, 'b'),
+        //     h('div', { key: 'e' }, 'e'),
+        //     h('div', { key: 'c' }, 'c'),
+        //     h('div', { key: 'd' }, 'd'),
+        //     h('div', { key: 'h' }, 'h'),
+        //     h('div', { key: 'f' }, 'f'),
+        //     h('div', { key: 'g' }, 'g'),
+
+        // ])
+        // render(vn1,app)
+
+        // render(h('TexT','YYY'),app)
+
+        render(h(Fragment,[h('div','hello'), h('div', 'ywh')]),app)
+        // render 内可以填写null 
+        // 实现清除原有元素
+        setTimeout(()=>{
+            // console.log(1);
+            // render(null,app)
+            // render(h('div', { class: 'b' },[h('div','new1'), h('div', 'new1')]),app)
+            
+            // render(vn2, app)
+            // render(h('Text','yyy'),app)
+
+            render(h(Fragment, [h('div', 'hello'), h('div', 'yyy')]), app)
+        },1000)
+
+        // setTimeout(() => {
+            // console.log(1);
+            // render(el2, app)
+        // }, 1000);
+
+        // 1、createRenderer
+        // 作用：实现自定义的渲染器(可以自行提供渲染方式) => 实现跨平台
+        // 2、render
+        // 作用：内置好的渲染器(用于渲染dom元素)
+        // 3、h
+        // 作用：创建一个虚拟dom 
+
+        // runtime-dom 模块
+        // 作用：提供DOM API(提供一系列dom操作的api方法)
+
+        // @vue/runtime-dom ==> @vue/runtime-core ==> @vue/reactivity
+
+    </script>
+</body>
+</html>

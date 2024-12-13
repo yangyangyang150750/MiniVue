@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="module">
+        // 官方的
+        // import {h,render, Fragment , onMounted ,ref,inject,provide,KeepAlive} from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h, ref, Fragment, onMounted, inject, provide , KeepAlive } from './runtime-dom.js';
+
+        // keepalive 实现的是缓存 缓存的是dom元素
+        // keepalive缓存后 不会重新渲染 而是复用原先的dom元素
+
+        // 1、组件不会被重新创建 而是会将上一次缓存的结果返回
+        // 2、组件不会被卸载 而是将dom元素移除
+        // 3、内部需要缓存dom
+
+
+        let keepAliveProps={
+            max:0
+        }
+        const A1 ={
+            name:'A1',
+            setup(){
+                onMounted(()=>{
+                    console.log('A1 挂载完成');
+                })
+                return ()=>{
+                    return h('h1','A1')
+                }
+            }
+        }
+
+        const A2 ={
+            name: 'A2',
+            setup(){
+                onMounted(()=>{
+                    console.log('A2 挂载完成');
+                })
+                return ()=>{
+                    return h('h1','A2')
+                }
+            }
+        }
+
+        const A3 = {
+            name: 'A3',
+                setup() {
+                    onMounted(() => {
+                        console.log('A3 挂载完成');
+                    })
+                    return () => {
+                        return h('h1', 'A3')
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                render(h(KeepAlive, keepAliveProps,{
+                    default:()=>{
+                        return h(A1,{key:'A1'})
+                    }
+                }),app)
+            }, 1000);
+            setTimeout(() => {
+                console.log(1);
+                    render(h(KeepAlive, keepAliveProps, {
+                        default: () => {
+                            return h(A2, { key: 'A2' })
+                        }
+                    }), app)
+                }, 2000); 
+            setTimeout(() => {
+                render(h(KeepAlive, keepAliveProps, {
+                    default: () => {
+                        return h(A1, { key: 'A1' } )
+                    }
+                }), app)
+            }, 3000);
+    </script>
+</body>
+</html>

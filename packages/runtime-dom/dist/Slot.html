@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script type="module">
+        // 官方的
+        // import {h,render, Fragment } from '/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-browser.js'
+        // 自己的
+        import { render, h, ref ,Fragment} from './runtime-dom.js';
+
+        const RenderComponent={
+            setup(proxy,{slots,emit,attrs,expose}){
+                return ()=>{
+                    return h(Fragment, [
+                        slots.footer(1)
+                    ])
+                }
+            }
+        }
+        const VueComponent = {
+            setup() {
+                return ()=>{
+                    return h(RenderComponent, null, {
+                        default: (t) => h('default',t),
+                        footer: (t) => h('footer',t),
+                        header: () => h('header')
+                    })
+                }
+            },
+        }
+
+        render(h(VueComponent), app)
+    </script>
+</body>
+
+</html>

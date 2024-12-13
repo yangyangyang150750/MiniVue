@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    
+</body>
+<script type="module">
+    // 原生
+    // import { reactive,ref,computed,effect } from "/node_modules/@vue/reactivity/dist/reactivity.esm-browser.js"
+    // 自己的
+    import { reactive, effect,ref,toRef,toRefs,proxyRefs,computed } from './reactivity.js'
+    // --reactive
+    // 功能实现:
+    // 1、只对 对象类型 做响应式
+    // let obj = reactive(123)
+    // console.log(obj); // 123
+
+    // 功能实现:
+    // 2、对 对象类型 做响应式
+    // let obj = reactive({name:'ywh'})
+    // console.log(obj);   // 此时obj为Proxy对象
+
+    // 功能实现:
+    // 3、实现缓存 避免重复代理
+    // let obj = {name:'ywh'}
+    // let proxyObj1 = reactive(obj)
+    // let proxyObj2 = reactive(obj)
+    // console.log(proxyObj1 === proxyObj2); // true
+
+    // 功能实现:
+    // 4、避免嵌套代理
+    // let proxyObj = reactive({name:'ywh'})
+    // let ProxyAgainObj = reactive(proxyObj)
+    // console.log(proxyObj === ProxyAgainObj);    // true
+
+    // 功能实现:
+    // 5、触发代理逻辑 get 和 set
+    // let proxyObj = reactive({ name: 'ywh' })
+    // console.log(proxyObj.name);     // 此时会调用get方法
+
+    // effect
+    // 功能实现:
+    // 1、基础的effect函数
+    // let proxyObj = reactive({ name: 'ywh' })
+    // const _effect = effect(() => {
+    //     document.querySelector('div').innerHTML = proxyObj.name
+    // })
+    // setTimeout(() => {
+    //     proxyObj.name = 'yyy'
+    //     _effect.run()
+    // }, 2000);
+
+    // 2、改进的effect函数
+    let proxyObj = reactive({ name: 'ywh' ,age:20,flag:true,address:{n:1}})
+    // let runner = effect(() => {
+    //     console.log('effect 执行~~');
+    //     // document.querySelector('div').innerHTML = proxyObj.name + '--' + proxyObj.name+ '--' + proxyObj.age
+    //     document.querySelector('div').innerHTML = proxyObj.flag?proxyObj.name+'-'+ proxyObj.name :proxyObj.age
+    // },{
+    //     scheduler: () => {
+    //         console.log('用户自定义scheduler执行');
+    //         runner()
+    //     }
+    // })
+
+    // const _effect2 = effect(() => {
+    //     document.querySelector('div').innerHTML = proxyObj.name 
+    // })
+    // setTimeout(() => {
+    //     proxyObj.flag=false
+
+    //     setTimeout(() => {
+    //         console.log('此时修改name  不应该执行effect');
+    //         proxyObj.name = 'yyy'
+    //     }, 1000);
+    // }, 1000);
+
+
+    // effect(() => {
+    //         document.querySelector('div').innerHTML = proxyObj.age
+    //         proxyObj.age = Math.random()
+    // })
+
+    // 递归代理
+    // effect(() => {
+    //          document.querySelector('div').innerHTML = proxyObj.address.n
+    //  })
+    //  setTimeout(() => {
+    //     proxyObj.address.n=2
+    //  }, 1000);
+
+// ref
+    let flag = ref(false)
+    // 用ref包裹后 此时flag变成如下对象
+    // flag = {
+    //     _v :false,
+    //     get value(){
+    //         return this._v
+    //     },
+    //     set value(newValue){
+    //         this._v = newValue
+    //     }
+    // }
+
+    // effect(()=>{
+    //     document.querySelector('div').innerHTML = flag.value?'true':'false'
+    // })
+
+    // setTimeout(() => {
+    //     flag.value = true
+    // }, 1000);
+
+// toRef
+    // let name = toRef(proxyObj,'name')
+    // let age = toRef(proxyObj,'age')
+    // console.log(name.value,age.value);
+
+// toRefs
+    // let state = reactive({name:'yyy',age:20})
+    // let {name,age} = toRefs(state)
+    // console.log(name,'---',age);
+
+// proxyRefs
+    // let state = reactive({ name: 'yyy', age: 20 })
+    // let proxy = proxyRefs({ ...toRefs(state) ,a:100})
+    // console.log(proxy);
+    // console.log(proxy.age);
+    
+    // effect(()=>{
+    //     console.log(proxy.age + '--' + proxy.name + '--' + proxy.a);
+    // })
+
+// computed
+    let state = reactive({name:'yyy',age:20})
+    let computedName = computed(
+        // 计算属性有两种写法
+        // 1、函数写法
+        // () => {
+            // console.log('computed函数执行');
+            // return '* * *' + state.name
+        // }
+        // 2、对象写法
+        {
+            get(oldValue){
+                console.log('computed函数执行！！ 当前旧值为' + oldValue);
+                return '* * *' + state.name
+            },
+            set(v){
+                console.log(v); // 执行computedName='xxx'时 执行此函数
+            }
+        }
+    )
+    // 1、计算属性只有在访问值时 才会执行
+    // 2、计算属性是不可变的ref类型  并且可以实现缓存(利用dirty实现)
+    effect(()=>{
+        console.log('第一次获取计算属性值：' + computedName.value);
+        console.log('第二次获取计算属性值：' + computedName.value);
+        console.log('第三次获取计算属性值：' + computedName.value);
+    })
+
+    setTimeout(() => {
+        console.log('计算属性依赖的属性发生修改');
+        state.name='ywh'
+    }, 1000);
+    // state.name='ywh'
+    // console.log(computedName.value);
+    // console.log(computedName.value);
+    // console.log(computedName.value);
+
+/*     effect(()=>{
+        console.log('effect 执行');
+        console.log(computedName.value);
+    })
+    setTimeout(() => {
+        state.name = 'ywh'
+    }, 2000); */
+    
+    // 实现原理：
+    // 1、计算属性具有收集effect依赖的能力，其依赖的属性发生变化时会触发依赖更新
+    // 2、计算属性维护了一个dirty属性 默认为true 执行一次后值变为false 其依赖的属性发生变化时更新为true
+    // 3、计算属性也是一个effect
+    
+    // 计算属性computedName 依赖属性state.name
+    // 计算属性本身就是一个effect,同时有dirty属性(默认为true),访问时会触发state.name的依赖收集
+    // => state.name与computedName绑定
+    // 稍后依赖属性state.name变化时,会触发计算属性的scheduler回调
+    // 计算属性也具有依赖收集功能,取值时会绑定其所在的effect
+    // 若state.name变化,会将计算属性computedName的dirty属性变为true
+
+    // state.name改变 =>  计算属性的dirty属性变为true => 执行计算属性scheduler => 触发计算属性绑定的effect
+</script>
+</html>
